@@ -1,0 +1,15 @@
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+
+1 RT_MANIFEST ".manifest"
+
+1 ICON "regedit.ico"
+101 ICON "icon_1.ico"
+102 ICON "icon_2.ico"
+103 ICON "icon_3.ico"
+104 ICON "icon_4.ico"
+105 ICON "icon_5.ico"
+106 ICON "icon_6.ico"
+107 ICON "icon_7.ico"
+108 ICON "icon_8.ico"
+109 ICON "icon_9.ico"
+
