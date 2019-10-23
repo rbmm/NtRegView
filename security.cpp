@@ -470,6 +470,7 @@ void DumpToken(WLog& log, LSA_LOOKUP_HANDLE PolicyHandle, HANDLE hToken, BOOL bR
 		PTOKEN_APPCONTAINER_INFORMATION AppConainer;
 		PTOKEN_DEFAULT_DACL ptdd;
 		PTOKEN_PRIMARY_GROUP ptpg;
+		PTOKEN_SID_INFORMATION ptsi;
 	};
 
 	log(L"********************************************************************************\r\n");
@@ -624,6 +625,33 @@ void DumpToken(WLog& log, LSA_LOOKUP_HANDLE PolicyHandle, HANDLE hToken, BOOL bR
 		if (0 <= (status = NtQueryInformationToken(hToken, TokenIntegrityLevel, buf, cb, &rcb)))
 		{
 			DumpSid(log, PolicyHandle, L"IntegrityLevel:    ", ptml->Label.Sid);
+			break;
+		}
+
+	} while (status == STATUS_BUFFER_TOO_SMALL);
+
+	//////////////////////////////////////////////////////////////////////////
+	//
+	rcb = MAX_SID_SIZE;
+	do 
+	{
+		if (cb < rcb)
+		{
+			if (rcb > MAXUSHORT)
+			{
+				status = STATUS_UNSUCCESSFUL;
+				break;
+			}
+
+			cb = RtlPointerToOffset(buf = alloca(rcb - cb), stack);
+		}
+
+		if (0 <= (status = NtQueryInformationToken(hToken, TokenProcessTrustLevel, buf, cb, &rcb)))
+		{
+			if (ptsi->Sid)
+			{
+				DumpSid(log, PolicyHandle, L"TrustLevel:        ", ptsi->Sid);
+			}
 			break;
 		}
 
