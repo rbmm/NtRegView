@@ -10,7 +10,7 @@ _NT_BEGIN
 #include "../winz/Frame.h"
 #include "../winz/split.h"
 #include "resource.h"
-
+#define AFX_IDW_STATUS_BAR 0xE801 
 void ShowSD(HANDLE hObject, PCWSTR caption, HWND hwndMain, HFONT hFont);
 
 struct KEY_CONTROL_FLAGS_INFO_W7  // KeyFlagsInformation for Win7
@@ -480,7 +480,7 @@ class MySplit : public ZSplitWndV
 		NONCLIENTMETRICS ncm = { m < 6 ? sizeof(NONCLIENTMETRICS) - 4 : sizeof(NONCLIENTMETRICS) };
 		if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0))
 		{
-			ncm.lfCaptionFont.lfHeight += ncm.lfSmCaptionFont.lfHeight/2;
+			ncm.lfCaptionFont.lfHeight = -ncm.iMenuHeight;
 			ncm.lfCaptionFont.lfWeight = FW_NORMAL;
 			ncm.lfCaptionFont.lfQuality = CLEARTYPE_QUALITY;
 			ncm.lfCaptionFont.lfPitchAndFamily = FIXED_PITCH|FF_MODERN;
