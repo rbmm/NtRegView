@@ -1009,23 +1009,18 @@ void zmain()
 	}
 }
 
-#define LAA(se) {{se},SE_PRIVILEGE_ENABLED|SE_PRIVILEGE_ENABLED_BY_DEFAULT}
-
-#define BEGIN_PRIVILEGES(tp, n) static const struct {ULONG PrivilegeCount;LUID_AND_ATTRIBUTES Privileges[n];} tp = {n,{
-#define END_PRIVILEGES }};
-
 BOOL AdjustPrivileges()
 {
 	BOOL f = FALSE;
 	HANDLE hToken;
-	if (0 <= ZwOpenProcessToken(NtCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
+	if (0 <= NtOpenProcessToken(NtCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
 	{
 		BEGIN_PRIVILEGES(tp, 2)
 			LAA(SE_RESTORE_PRIVILEGE),
 			LAA(SE_BACKUP_PRIVILEGE),
 		END_PRIVILEGES	
-		f = !ZwAdjustPrivilegesToken(hToken, FALSE, (PTOKEN_PRIVILEGES)&tp, 0, 0, 0);
-		ZwClose(hToken);
+		f = !NtAdjustPrivilegesToken(hToken, FALSE, const_cast<PTOKEN_PRIVILEGES>(&tp), 0, 0, 0);
+		NtClose(hToken);
 	}
 	return f;
 }
