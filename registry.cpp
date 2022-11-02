@@ -381,7 +381,7 @@ void SetTipText(HWND hwnd, int iItem, PWSTR pszText, UINT cchTextMax)
 	}
 }
 
-class MySplit : public ZSplitWndV
+class MySplit : public ZSplitWnd
 {
 	HICON m_hi[16];
 	HWND _hwndLV, _hwndTV;
@@ -399,7 +399,7 @@ class MySplit : public ZSplitWndV
 
 		if (lt)
 		{
-			if (hwnd = CreateWindowExW(0, WC_TREEVIEW, 0, WS_CHILD|WS_VISIBLE|TVS_SHOWSELALWAYS|
+			if (hwnd = CreateWindowExW(0, WC_TREEVIEW, 0, WS_CHILD|WS_BORDER|WS_VISIBLE|TVS_SHOWSELALWAYS|
 				TVS_LINESATROOT|TVS_HASLINES|TVS_HASBUTTONS|TVS_DISABLEDRAGDROP|
 				TVS_EDITLABELS, x, y, nWidth, nHeight, hwndParent, (HMENU)ID_TV, 0, 0))
 			{
@@ -418,7 +418,8 @@ class MySplit : public ZSplitWndV
 		else
 		{
 			if (hwnd = CreateWindowExW(0, WC_LISTVIEW, 0, 
-				WS_VISIBLE|WS_CHILD|LVS_EDITLABELS|LVS_REPORT|LVS_SHOWSELALWAYS|LVS_SHAREIMAGELISTS|LVS_SINGLESEL|WS_HSCROLL|WS_VSCROLL,
+				WS_VISIBLE|WS_CHILD|WS_BORDER|LVS_EDITLABELS|LVS_REPORT|
+				LVS_SHOWSELALWAYS|LVS_SHAREIMAGELISTS|LVS_SINGLESEL|WS_HSCROLL|WS_VSCROLL,
 				x, y, nWidth, nHeight, hwndParent, (HMENU)ID_LV, 0, 0))
 			{
 				_hwndLV = hwnd;
@@ -665,7 +666,7 @@ class MySplit : public ZSplitWndV
 			}
 			break;
 		}
-		return ZSplitWndV::WindowProc(hwnd, uMsg, wParam, lParam);
+		return ZSplitWnd::WindowProc(hwnd, uMsg, wParam, lParam);
 	}
 
 public:
@@ -679,7 +680,7 @@ public:
 		pWnd->SetStatusText(1, L"");
 	}
 
-	MySplit(int t) : ZSplitWndV(t)
+	MySplit(int t) : ZSplitWnd(true, t, (HBRUSH)(1+COLOR_WINDOW))
 	{
 		_hFont = 0;
 		m_item = 0;
@@ -896,7 +897,7 @@ class ZMainWnd : public ZSDIFrameWnd
 	{
 		if (MySplit* p = new MySplit(nWidth>>2))
 		{
-			_hwnd = p->Create(0, 0, WS_CHILD|WS_VISIBLE|WS_BORDER, x - 1, y, nWidth + 2, nHeight + 1, hwnd, 0, 0);
+			_hwnd = p->Create(0, 0, WS_CHILD|WS_VISIBLE|WS_CLIPCHILDREN, x, y, nWidth, nHeight, hwnd, 0, 0);
 			p->Release();
 		}
 
